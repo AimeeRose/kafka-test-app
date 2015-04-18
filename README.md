@@ -4,7 +4,7 @@ Simple kafka app
 
 ## Installation
 
-** Get setup with kafka **
+**Get setup with kafka**
 
 ```
 curl -O http://apache.arvixe.com/kafka/0.8.2.1/kafka_2.10-0.8.2.1.tgz
