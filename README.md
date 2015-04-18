@@ -12,6 +12,10 @@ tar xzf kafka_2.10-0.8.2.1.tgz
 cd kafka_2.10-0.8.2.1
 sbt update
 sbt package
+
+## Start zookeeper and kafka server
+
+```
 # start zookeepker, by default port 2181
 bin/zookeeper-server-start.sh config/zookeeper.properties
 # start kafka server, by default port 9092

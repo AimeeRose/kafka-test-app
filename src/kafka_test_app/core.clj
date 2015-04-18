@@ -11,23 +11,36 @@
                   "serializer.class" "kafka.serializer.DefaultEncoder"
                   "partitioner.class" "kafka.producer.DefaultPartitioner"}))
 
-(send-message p (message "test1" (.getBytes "this is my first message")))
-(send-message p (message "test1" (.getBytes "this is my second message")))
-
 (def config {"zookeeper.connect" "localhost:2181"
              "group.id" "clj-kafka.consumer"
+             "auto.commit.interval.ms" "10"
              "auto.offset.reset" "smallest"
-             "auto.commit.enable" "false"})
+             "auto.commit.enable" "true"})
 
 (defn string-value
   [k]
   (fn [m]
     (String. (k m) "UTF-8")))
 
+(defn consume [topic]
+  "consume topic and print to stdout"
+  ;; if there are messages, print each in turn
+  ;; otherwise sleep a bit and recur
+  ;;
+  (let [c (consumer config) msgs (messages c topic)]
+    (loop [msgs msgs]
+      (println ((string-value :value) (first msgs)))
+      (recur (rest msgs)))))
+
+(defn produce [topic]
+  (doseq [line (line-seq (java.io.BufferedReader. *in*))] 
+    (send-message p (message topic (.getBytes line)))))
+
 (defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (with-resource [c (consumer config)]
-    shutdown
-    (let [messages (take 10 (messages c "test1"))]
-      (println ((string-value :value) (last messages))))))
+  "either producer or consume topic
+   ex.: lein run producer topic1
+   ex.: lein run consumer topic1"
+  [producer-consumer topic]
+  (if (= producer-consumer "consumer")
+    (consume topic)
+    (produce topic)))
