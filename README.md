@@ -1,36 +1,25 @@
 # kafka-test-app
 
-FIXME: description
+Simple kafka app
 
 ## Installation
 
-Download from http://example.com/FIXME.
+** Get setup with kafka **
 
-## Usage
+```
+curl -O http://apache.arvixe.com/kafka/0.8.2.1/kafka_2.10-0.8.2.1.tgz
+tar xzf kafka_2.10-0.8.2.1.tgz
+cd kafka_2.10-0.8.2.1
+sbt update
+sbt package
+# start zookeepker, by default port 2181
+bin/zookeeper-server-start.sh config/zookeeper.properties
+# start kafka server, by default port 9092
+bin/kafka-server-start.sh config/server.properties
+```
 
-FIXME: explanation
+## Run the app
 
-    $ java -jar kafka-test-app-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2015 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+```
+lein run
+```
