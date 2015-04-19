@@ -1,6 +1,6 @@
 (ns kafka-test-app.core
   (:require [kafka-test-app.producer :as producer])
-  (:require [kafka-test-app.consumer :as consumer]))
+  (:require [kafka-test-app.simple-consumer :as consumer]))
 (use 'clj-kafka.core)
 (use 'clj-kafka.zk)
 
