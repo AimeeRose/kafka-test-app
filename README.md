@@ -22,8 +22,20 @@ cd ../kafka_2.10-0.8.2.1 && bin/zookeeper-server-start.sh config/zookeeper.prope
 bin/kafka-server-start.sh config/server.properties
 ```
 
-## Run the app
+## Run a producer
 
 ```
 lein run
 ```
+
+## Helpers
+
+Clear stuff out
+```
+rm -r /tmp/zookeeper/
+rm -r /tmp/kafka-logs/
+```
+
+**System tools**
+
+https://cwiki.apache.org/confluence/display/KAFKA/System+Tools
