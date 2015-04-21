@@ -1,6 +1,7 @@
 (ns kafka-test-app.core
   (:require [kafka-test-app.producer :as producer])
-  (:require [kafka-test-app.consumer :as consumer]))
+  (:require [kafka-test-app.consumer :as consumer])
+  (:require [kafka-test-app.twitter :as twitter]))
 (use 'clj-kafka.core)
 (use 'clj-kafka.zk)
 
