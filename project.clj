@@ -6,7 +6,8 @@
   :dependencies [[org.clojure/clojure "1.6.0"],
                  [clj-kafka "0.2.8-0.8.1.1"],
                  [twitter-api "0.7.8"],
-                 [cheshire "5.2.0"]]
+                 [cheshire "5.2.0"],
+                 [org.clojure/data.json "0.2.6"]]
   :main ^:skip-aot kafka-test-app.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})

@@ -15,35 +15,26 @@
                                 (System/getenv "TWITTER_ACCESS_TOKEN")
                                 (System/getenv "TWITTER_TOKEN_SECRET")))
 
-(defn parse-tweet-body [body]
-  (slurp (clojure.java.io/input-stream (.toByteArray body))))
+;; everytime there is a callback, check if there is an \r\n in the payload.
+;; if yes, print tweet-text + payload and rebind tweet-text to nil
+;; if not, rebind tweet-text to tweet-text payload
 
-; Credit https://gist.github.com/samn/6231768
-(defn print-tweet
-   "A streaming on-bodypart handler.
-    baos is a ByteArrayOutputStream.  (str baos) is the response body (encoded as JSON).
-    This handler will print the expanded media URL of Tweets that have media."
-   [response body]
-   ;; parse the tweet (true means convert to keyword keys)
-   (let [tweet (parse-tweet-body body)
-         ;; retrieve the media array from the tweet.
-         ;; see https://dev.twitter.com/docs/tweet-entities
-         media (get-in tweet [:entities :media])
-         urls (map :expanded_url media)]
-    (println tweet)
-    ;; doseq can include a conditional inline with its binding
-    ;; we'll only iterate and print when urls isn't empty
-    (doseq [url urls :when (not (empty? urls))]
-      (println url))))
+(def tweet-text (ref nil))
 
-; supply a callback that only prints the text of the status
-(def ^:dynamic 
-   *custom-streaming-callback* 
-   (AsyncStreamingCallback.
-     print-tweet
-     (comp println response-return-everything)
-     exception-print))
-
-(statuses-filter :params {:track "dogs"}
-         :oauth-creds my-creds
-         :callbacks *custom-streaming-callback*)
+(let [callback (AsyncStreamingCallback.
+                 (fn [_resp payload]
+                  (let [str-msg (String. (.toByteArray payload))]
+                    (if (re-find #"\r\n" str-msg)
+                      (do
+                        (println (json/parse-string (str @tweet-text payload) true))
+                        (dosync (ref-set tweet-text nil)))
+                      (do
+                        (dosync (ref-set tweet-text (str @tweet-text payload)))))))
+                 (fn [_resp]
+                   (println "error"))
+                 (fn [_resp ex]
+                   (.printStackTrace ex)))]
+  (statuses-filter
+    :params {:track "science"}
+    :oauth-creds my-creds
+    :callbacks callback))
