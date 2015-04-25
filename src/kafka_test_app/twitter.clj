@@ -38,7 +38,6 @@
                    (fn [_resp ex]
                      (.printStackTrace ex)))]
     (statuses-filter
-      :params {:track "news" :language "en"}
+      :params {:follow (clojure.string/join "," news-handles/news-handles-ids) :language "en"}
       :oauth-creds my-creds
-      :callbacks callback))
-)
+      :callbacks callback)))

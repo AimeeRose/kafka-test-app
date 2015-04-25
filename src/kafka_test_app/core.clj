@@ -17,4 +17,5 @@
 ;     (producer/produce topic)))
 
 (defn -main []
+  (println "time to party!")
   (twitter/stream))
