@@ -5,6 +5,7 @@
    [twitter.callbacks.handlers]
    [twitter.api.streaming])
   (:require
+   [kafka-test-app.news-handles :as news-handles]
    [cheshire.core :as json]
    [http.async.client :as ac])
   (:import
@@ -21,20 +22,23 @@
 
 (def tweet-text (ref nil))
 
-(let [callback (AsyncStreamingCallback.
-                 (fn [_resp payload]
-                  (let [str-msg (String. (.toByteArray payload))]
-                    (if (re-find #"\r\n" str-msg)
-                      (do
-                        (println (json/parse-string (str @tweet-text payload) true))
-                        (dosync (ref-set tweet-text nil)))
-                      (do
-                        (dosync (ref-set tweet-text (str @tweet-text payload)))))))
-                 (fn [_resp]
-                   (println "error"))
-                 (fn [_resp ex]
-                   (.printStackTrace ex)))]
-  (statuses-filter
-    :params {:track "science"}
-    :oauth-creds my-creds
-    :callbacks callback))
+(defn stream []
+  (let [callback (AsyncStreamingCallback.
+                   (fn [_resp payload]
+                    (let [str-msg (String. (.toByteArray payload))]
+                      (if (re-find #"\r\n" str-msg)
+                        (do
+                          ;(if (> (:followers_count (:user (json/parse-string (str @tweet-text payload) true))) 1999)
+                            (println (:text (json/parse-string (str @tweet-text payload) true)));)
+                          (dosync (ref-set tweet-text nil)))
+                        (do
+                          (dosync (ref-set tweet-text (str @tweet-text payload)))))))
+                   (fn [_resp]
+                     (println "error"))
+                   (fn [_resp ex]
+                     (.printStackTrace ex)))]
+    (statuses-filter
+      :params {:track "news" :language "en"}
+      :oauth-creds my-creds
+      :callbacks callback))
+)
