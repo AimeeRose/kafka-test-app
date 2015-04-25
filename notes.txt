@@ -1,0 +1,3 @@
+Rules for selecting strings:
+For every tweet body
+For every word, if it is capitalized, add it to the accumulated string. Once a lowercase word is reached, take the current value and find or create a place in the dictionary for it and set the value to += 1
