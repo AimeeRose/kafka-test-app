@@ -20,16 +20,19 @@
 ;; if yes, print tweet-text + payload and rebind tweet-text to nil
 ;; if not, rebind tweet-text to tweet-text payload
 
+(defn handle-tweet [tweet-hash]
+  "takes the tweet hash and does something with it."
+  (println tweet-hash))
+
 (def tweet-text (ref nil))
 
-(defn stream []
+(defn stream [tweet-fn]
   (let [callback (AsyncStreamingCallback.
                    (fn [_resp payload]
                     (let [str-msg (String. (.toByteArray payload))]
                       (if (re-find #"\r\n" str-msg)
                         (do
-                          ;(if (> (:followers_count (:user (json/parse-string (str @tweet-text payload) true))) 1999)
-                            (println (:text (json/parse-string (str @tweet-text payload) true)));)
+                          (tweet-fn (json/parse-string (str @tweet-text payload) true))
                           (dosync (ref-set tweet-text nil)))
                         (do
                           (dosync (ref-set tweet-text (str @tweet-text payload)))))))

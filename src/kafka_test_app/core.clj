@@ -16,6 +16,9 @@
 ;     (consumer/consume topic)
 ;     (producer/produce topic)))
 
-(defn -main []
+(defn -main [producer-consumer topic]
   (println "time to party!")
-  (twitter/stream))
+   [producer-consumer topic]
+   (if (= producer-consumer "consumer")
+     (consumer/consume topic)
+     (producer/produce topic)))

@@ -23,5 +23,6 @@
   ;;
   (let [msgs (messages c topic)]
     (loop [msgs msgs]
-      (println ((string-value :value) (first msgs)))
+      (do
+        (println ((string-value :value) (first msgs))))
       (recur (rest msgs)))))

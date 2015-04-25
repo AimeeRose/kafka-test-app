@@ -1,4 +1,5 @@
-(ns kafka-test-app.producer)
+(ns kafka-test-app.producer
+  (:require [kafka-test-app.twitter :as twitter]))
 
 (use 'clj-kafka.producer)
 
@@ -7,5 +8,4 @@
                   "partitioner.class" "kafka.producer.DefaultPartitioner"}))
 
 (defn produce [topic]
-  (doseq [line (line-seq (java.io.BufferedReader. *in*))] 
-    (send-message p (message topic (.getBytes line)))))
+  (twitter/stream #(send-message p (message topic (.getBytes (:text %))))))
